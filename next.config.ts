@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export',
   trailingSlash: true,
   images: {
     domains: ['api.komandor-stock.ru'],
@@ -8,6 +9,7 @@ const nextConfig: NextConfig = {
   },
   basePath: process.env.NODE_ENV === 'production' ? '/stock' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/stock' : '',
+  distDir: 'dist',
 };
 
 export default nextConfig;
