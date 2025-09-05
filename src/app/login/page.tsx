@@ -32,7 +32,7 @@ export default function LoginPage() {
       await login(data.username, data.password);
       toast.success('Вход выполнен успешно');
       router.push('/');
-    } catch (error) {
+    } catch {
       toast.error('Ошибка авторизации. Проверьте логин и пароль.');
     } finally {
       setIsLoading(false);

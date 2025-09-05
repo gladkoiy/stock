@@ -18,7 +18,7 @@ export const promotionSchema = z.object({
     .string()
     .min(1, 'Дата окончания обязательна')
     .refine((date) => !isNaN(Date.parse(date)), 'Неверный формат даты'),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().optional().default(true),
   parentId: z.string().uuid().optional().or(z.literal('none')),
   rules: z.string().optional(),
   couponsPlaceholder: z.string().optional(),

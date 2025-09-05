@@ -47,7 +47,7 @@ export function PromotionCard({
       await apiClient.deletePromotion(promotion.id);
       toast.success('Акция удалена успешно');
       onRefresh();
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при удалении акции');
     } finally {
       setIsDeleting(false);

@@ -107,7 +107,7 @@ export function FileUpload({ promotionId, onUploadComplete }: FileUploadProps) {
       setUploadingFiles([]);
       form.reset();
       onUploadComplete();
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при загрузке файлов');
       setUploadingFiles([]);
     }

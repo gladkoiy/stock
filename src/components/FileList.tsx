@@ -29,7 +29,6 @@ export function FileList({
   files, 
   fileType, 
   title, 
-  promotionId, 
   onFileDeleted 
 }: FileListProps) {
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
@@ -50,7 +49,7 @@ export function FileList({
       await apiClient.deleteFile(file.file_path);
       toast.success('Файл удален успешно');
       onFileDeleted();
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при удалении файла');
     } finally {
       setDeletingFileId(null);
@@ -72,13 +71,6 @@ export function FileList({
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(filePath);
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
 
   if (filteredFiles.length === 0) {
     return (

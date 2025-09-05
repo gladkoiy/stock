@@ -31,7 +31,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { PromotionRead } from '@/types';
 import { promotionSchema, PromotionFormData } from '@/lib/validations';
 import { apiClient } from '@/lib/api';
@@ -137,7 +136,7 @@ export function PromotionModal({
 
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch {
       toast.error(isEditing ? 'Ошибка при обновлении акции' : 'Ошибка при создании акции');
     } finally {
       setIsLoading(false);
