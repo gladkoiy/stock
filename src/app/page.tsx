@@ -57,7 +57,7 @@ export default function Home() {
   };
 
   const handleFileManagement = (promotionId: string) => {
-    router.push(`/promotions/${promotionId}/files`);
+    router.push(`/files?id=${promotionId}`);
   };
 
   const handleCreatePromotion = () => {

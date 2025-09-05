@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
@@ -14,22 +14,25 @@ import { generatePromoUrl } from '@/lib/utils';
 import { toast } from 'sonner';
 import { ArrowLeft, RefreshCw, ExternalLink } from 'lucide-react';
 
-export default function PromotionFilesPage() {
-  const params = useParams();
+function PromotionFilesContent() {
   const router = useRouter();
-  const promotionId = params.id as string;
+  const searchParams = useSearchParams();
+  const promotionId = searchParams.get('id') || '';
   
   const [promotion, setPromotion] = useState<PromotionRead | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchPromotion = useCallback(async (refresh = false) => {
+    if (!promotionId) {
+      router.push('/');
+      return;
+    }
+
     if (refresh) setIsRefreshing(true);
     else setIsLoading(true);
 
     try {
-      // Get all promotions and find the specific one
-      // In a real API, you would have a GET /promotions/{id} endpoint
       const promotions = await apiClient.getPromotions({ include_inactive: true });
       const targetPromotion = promotions.find(p => p.id === promotionId);
       
@@ -220,5 +223,20 @@ export default function PromotionFilesPage() {
         </main>
       </div>
     </ProtectedRoute>
+  );
+}
+
+export default function PromotionFilesPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
+          <p>Загрузка...</p>
+        </div>
+      </div>
+    }>
+      <PromotionFilesContent />
+    </Suspense>
   );
 }
