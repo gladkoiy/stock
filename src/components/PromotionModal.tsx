@@ -158,12 +158,12 @@ export function PromotionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto mx-4">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-lg sm:text-xl">
             {isEditing ? 'Редактировать акцию' : 'Создать акцию'}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm sm:text-base">
             {isEditing 
               ? 'Внесите изменения в данные акции.' 
               : 'Заполните форму для создания новой акции.'
@@ -191,17 +191,18 @@ export function PromotionModal({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="startDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Дата начала *</FormLabel>
+                    <FormLabel className="text-sm">Дата начала *</FormLabel>
                     <FormControl>
                       <Input
                         type="datetime-local"
                         disabled={isLoading}
+                        className="text-sm"
                         {...field}
                       />
                     </FormControl>
@@ -215,11 +216,12 @@ export function PromotionModal({
                 name="endDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Дата окончания *</FormLabel>
+                    <FormLabel className="text-sm">Дата окончания *</FormLabel>
                     <FormControl>
                       <Input
                         type="datetime-local"
                         disabled={isLoading}
+                        className="text-sm"
                         {...field}
                       />
                     </FormControl>
@@ -320,16 +322,21 @@ export function PromotionModal({
               )}
             />
 
-            <DialogFooter>
+            <DialogFooter className="flex-col sm:flex-row gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleClose}
                 disabled={isLoading}
+                className="w-full sm:w-auto order-2 sm:order-1"
               >
                 Отмена
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full sm:w-auto order-1 sm:order-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isEditing ? 'Сохранить' : 'Создать'}
               </Button>

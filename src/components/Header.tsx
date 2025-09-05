@@ -15,7 +15,7 @@ export function Header() {
     <header className="border-b bg-white">
       <div className="flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold">Система управления акциями</h1>
+          <h1 className="text-xl font-bold">Командор</h1>
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">

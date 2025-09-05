@@ -40,13 +40,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 sm:p-6">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+        <CardHeader className="space-y-1 px-4 sm:px-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-center">
             Система управления акциями
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-sm sm:text-base">
             Введите учетные данные для входа в систему
           </CardDescription>
         </CardHeader>

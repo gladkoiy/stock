@@ -130,20 +130,23 @@ export function PromotionCard({
             </div>
           </div>
 
-          {/* Кнопки действий */}
-          <div className="flex gap-2 flex-wrap">
+          {/* Кнопки действий - mobile responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap gap-2">
             <Button
               size="sm"
               variant="outline"
               onClick={() => onEdit(promotion)}
+              className="w-full lg:w-auto"
             >
               <Edit className="h-4 w-4 mr-1" />
-              Редактировать
+              <span className="lg:hidden">Редакт.</span>
+              <span className="hidden lg:inline">Редактировать</span>
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={() => onFileManagement(promotion.id)}
+              className="w-full lg:w-auto"
             >
               <FolderOpen className="h-4 w-4 mr-1" />
               Файлы
@@ -152,9 +155,11 @@ export function PromotionCard({
               size="sm"
               variant="outline"
               onClick={() => window.open(generatePromoUrl(promotion.id), '_blank')}
+              className="w-full sm:col-span-2 lg:col-span-1 lg:w-auto"
             >
               <ExternalLink className="h-4 w-4 mr-1" />
-              Просмотреть акцию
+              <span className="lg:hidden">Просмотр</span>
+              <span className="hidden lg:inline">Просмотреть акцию</span>
             </Button>
             {promotion.isParent && (
               <Button
