@@ -55,7 +55,7 @@ export function PromotionModal({
   const [isLoading, setIsLoading] = useState(false);
   const isEditing = !!promotion;
 
-  const form = useForm<PromotionFormData>({
+  const form = useForm({
     resolver: zodResolver(promotionSchema),
     defaultValues: {
       name: '',
