@@ -1,0 +1,25 @@
+Требуется реализовать систему чтобы было 
+
+1. Экраны: 1. Авторизация ( регистрации нет)
+Использовать для логина эту ручку https://api.komandor-stock.ru/promo_api/v1/auth/jwt/login
+
+2. Главный экран 
+
+1. Показать текущие акции 
+
+curl -X 'GET' \
+  'https://api.komandor-stock.ru/promo_api/v1/promotions?include_inactive=false' \
+  -H 'accept: application/json' 
+
+Так же нужно уметь создать акции  и удалять их
+
+
+Так же нужно уметь статические файлы в акции 
+
+PUT /static/update/single 
+POST /static/upload/single
+DELETE /static
+DELETE /static/files/{file_id}
+
+
+Вообщем надо проанализировать /Users/ivan/dev/komandor/stockmngr/openapi.json и сделать чтобы можно было упралять акциями и файлами в них

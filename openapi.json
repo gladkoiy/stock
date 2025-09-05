@@ -1,0 +1,5049 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Бэк для акций",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "/promo_api/v1"
+    }
+  ],
+  "paths": {
+    "/promotions": {
+      "get": {
+        "tags": [
+          "Промо-акции"
+        ],
+        "summary": "Get Promotions",
+        "description": "Get promotions list.\nIf parent_id is provided, returns child promotions for that parent.\nIf parent_id is None, returns only root promotions.",
+        "operationId": "get_promotions_promotions_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "parent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parent Id"
+            }
+          },
+          {
+            "name": "include_inactive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Include inactive promotions",
+              "default": false,
+              "title": "Include Inactive"
+            },
+            "description": "Include inactive promotions"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/PromotionRead"
+                      },
+                      {
+                        "$ref": "#/components/schemas/PromotionAdminRead"
+                      }
+                    ]
+                  },
+                  "title": "Response Get Promotions Promotions Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Промо-акции"
+        ],
+        "summary": "Create Promotions",
+        "description": "Create new promotions.\nPromotions can be created as root promotions or as children of existing promotions.\nChild promotions cannot have their own children.",
+        "operationId": "create_promotions_promotions_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PromotionCreate"
+                },
+                "title": "New Promotions"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Create Promotions Promotions Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Промо-акции"
+        ],
+        "summary": "Update Promotion",
+        "description": "Update a promotion.\nWhen updating parent_id, ensures that:\n1. The target parent exists and is not a child promotion\n2. The promotion's dates are within the parent's date range",
+        "operationId": "update_promotion_promotions_put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromotionUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update Promotion Promotions Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/promotions/{promotion_id}": {
+      "get": {
+        "tags": [
+          "Промо-акции"
+        ],
+        "summary": "Get Promotion",
+        "description": "Get a specific promotion by ID with its immediate children.",
+        "operationId": "get_promotion_promotions__promotion_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          },
+          {
+            "name": "include_inactive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Include inactive promotions",
+              "default": false,
+              "title": "Include Inactive"
+            },
+            "description": "Include inactive promotions"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PromotionRead"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PromotionAdminRead"
+                    }
+                  ],
+                  "title": "Response Get Promotion Promotions  Promotion Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Промо-акции"
+        ],
+        "summary": "Delete Promotion",
+        "description": "Delete a promotion and all its children.",
+        "operationId": "delete_promotion_promotions__promotion_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Delete Promotion Promotions  Promotion Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stages": {
+      "get": {
+        "tags": [
+          "Этапы"
+        ],
+        "summary": "Get Stages",
+        "operationId": "get_stages_stages_get",
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StageRead"
+                  },
+                  "title": "Response Get Stages Stages Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Этапы"
+        ],
+        "summary": "Create Stages",
+        "operationId": "create_stages_stages_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/StageCreate"
+                },
+                "title": "New Stages"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StageRead"
+                      }
+                    },
+                    {
+                      "type": "object"
+                    }
+                  ],
+                  "title": "Response Create Stages Stages Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Этапы"
+        ],
+        "summary": "Delete Stages",
+        "operationId": "delete_stages_stages_delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": "Stage Ids"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Этапы"
+        ],
+        "summary": "Update Stages",
+        "operationId": "update_stages_stages_put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/StageUpdate"
+                },
+                "title": "Stages Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update Stages Stages Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stages/{stage_id}": {
+      "delete": {
+        "tags": [
+          "Этапы"
+        ],
+        "summary": "Delete Stage",
+        "operationId": "delete_stage_stages__stage_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/prizes": {
+      "get": {
+        "tags": [
+          "Призы"
+        ],
+        "summary": "Get Prizes",
+        "operationId": "get_prizes_prizes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PrizeRead"
+                  },
+                  "type": "array",
+                  "title": "Response Get Prizes Prizes Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Призы"
+        ],
+        "summary": "Update Prize",
+        "operationId": "update_prize_prizes_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrizeUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update Prize Prizes Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Призы"
+        ],
+        "summary": "Create Prizes",
+        "operationId": "create_prizes_prizes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/PrizeCreate"
+                },
+                "type": "array",
+                "title": "New Prizes"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PrizeRead"
+                  },
+                  "type": "array",
+                  "title": "Response Create Prizes Prizes Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Призы"
+        ],
+        "summary": "Delete Prizes",
+        "operationId": "delete_prizes_prizes_delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": "array",
+                "title": "Prize Ids"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/prizes/{stage_id}": {
+      "get": {
+        "tags": [
+          "Призы"
+        ],
+        "summary": "Get Prizes By Stage Id",
+        "operationId": "get_prizes_by_stage_id_prizes__stage_id__get",
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PrizeRead"
+                  },
+                  "title": "Response Get Prizes By Stage Id Prizes  Stage Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/prizes/{prize_id}": {
+      "delete": {
+        "tags": [
+          "Призы"
+        ],
+        "summary": "Delete Prize",
+        "operationId": "delete_prize_prizes__prize_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "prize_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Prize Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/coupons/": {
+      "post": {
+        "tags": [
+          "Купоны (шансы)"
+        ],
+        "summary": "Create Coupons",
+        "description": "Create new coupons.",
+        "operationId": "create_coupons_coupons__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/CouponCreate"
+                },
+                "type": "array",
+                "title": "Coupons Create"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Create Coupons Coupons  Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Купоны (шансы)"
+        ],
+        "summary": "Delete Coupons",
+        "description": "Delete all coupons.",
+        "operationId": "delete_coupons_coupons__delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Delete Coupons Coupons  Delete"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/coupons/{card_number}": {
+      "get": {
+        "tags": [
+          "Купоны (шансы)"
+        ],
+        "summary": "Get Coupons",
+        "description": "Get coupons for a card number.\n\nReturns:\n- Promotion name\n- List of coupons with winning status",
+        "operationId": "get_coupons_coupons__card_number__get",
+        "parameters": [
+          {
+            "name": "card_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Card Number"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional promotion ID filter",
+              "title": "Promotion Id"
+            },
+            "description": "Optional promotion ID filter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Купоны (шансы)"
+        ],
+        "summary": "Delete Coupons By Card Number",
+        "description": "Delete all coupons for a specific card number and promotion.",
+        "operationId": "delete_coupons_by_card_number_coupons__card_number__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "card_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Card Number"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Promotion ID",
+              "title": "Promotion Id"
+            },
+            "description": "Promotion ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Delete Coupons By Card Number Coupons  Card Number  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/winners": {
+      "get": {
+        "tags": [
+          "Победители"
+        ],
+        "summary": "Get Winners",
+        "operationId": "get_winners_winners_get",
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WinnerRead"
+                  },
+                  "title": "Response Get Winners Winners Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Победители"
+        ],
+        "summary": "Create Winners",
+        "operationId": "create_winners_winners_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WinnerCreate"
+                },
+                "title": "New Winners"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WinnerRead"
+                  },
+                  "title": "Response Create Winners Winners Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Победители"
+        ],
+        "summary": "Update Winners",
+        "operationId": "update_winners_winners_put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WinnerUpdate"
+                },
+                "title": "Winners Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update Winners Winners Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/winners/upload_winners/": {
+      "post": {
+        "tags": [
+          "Победители"
+        ],
+        "summary": "Upload Winners Csv",
+        "operationId": "upload_winners_csv_winners_upload_winners__post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_winners_csv_winners_upload_winners__post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/switches": {
+      "get": {
+        "tags": [
+          "Переключатели"
+        ],
+        "summary": "Get Switches",
+        "operationId": "get_switches_switches_get",
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SwitchRead"
+                  },
+                  "title": "Response Get Switches Switches Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Переключатели"
+        ],
+        "summary": "Create Switches",
+        "operationId": "create_switches_switches_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SwitchCreate"
+                },
+                "title": "New Switches"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SwitchRead"
+                  },
+                  "title": "Response Create Switches Switches Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Переключатели"
+        ],
+        "summary": "Delete Switches",
+        "operationId": "delete_switches_switches_delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": "Switch Ids"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Переключатели"
+        ],
+        "summary": "Update Switches",
+        "operationId": "update_switches_switches_put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SwitchUpdate"
+                },
+                "title": "Switches Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update Switches Switches Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/switches/{switch_name}": {
+      "get": {
+        "tags": [
+          "Переключатели"
+        ],
+        "summary": "Get Switch",
+        "operationId": "get_switch_switches__switch_name__get",
+        "parameters": [
+          {
+            "name": "switch_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Switch Name"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwitchRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/static/update/single": {
+      "put": {
+        "tags": [
+          "Статические файлы"
+        ],
+        "summary": "Update File",
+        "description": "Update a single static file.",
+        "operationId": "update_file_static_update_single_put",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_update_file_static_update_single_put"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update File Static Update Single Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/static/upload/single": {
+      "post": {
+        "tags": [
+          "Статические файлы"
+        ],
+        "summary": "Upload File",
+        "description": "Upload a single file for a promotion.",
+        "operationId": "upload_file_static_upload_single_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_file_static_upload_single_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Upload File Static Upload Single Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/static/files/{file_id}": {
+      "delete": {
+        "tags": [
+          "Статические файлы"
+        ],
+        "summary": "Delete File",
+        "description": "Delete a static file.",
+        "operationId": "delete_file_static_files__file_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Delete File Static Files  File Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/static": {
+      "delete": {
+        "tags": [
+          "Статические файлы"
+        ],
+        "summary": "Delete Files",
+        "description": "Delete specific files for a promotion.",
+        "operationId": "delete_files_static_delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaticFileDelete"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Delete Files Static Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/static/{promotion_id}/{file_type}/{file_name}": {
+      "get": {
+        "tags": [
+          "Статические файлы"
+        ],
+        "summary": "Get File",
+        "description": "Get a static file by promotion ID, file type and filename.",
+        "operationId": "get_file_static__promotion_id___file_type___file_name__get",
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          },
+          {
+            "name": "file_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StaticFileType"
+            }
+          },
+          {
+            "name": "file_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "File Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/videos": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Get Video",
+        "operationId": "get_video_videos_get",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Filename"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Create Video File",
+        "operationId": "create_video_file_videos_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "video_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Name"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_video_file_videos_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/links": {
+      "get": {
+        "tags": [
+          "Ссылки"
+        ],
+        "summary": "Get Links",
+        "operationId": "get_links_links_get",
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkRead"
+                  },
+                  "title": "Response Get Links Links Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Ссылки"
+        ],
+        "summary": "Create Links",
+        "operationId": "create_links_links_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LinkCreate"
+                },
+                "title": "New Links"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkRead"
+                  },
+                  "title": "Response Create Links Links Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Ссылки"
+        ],
+        "summary": "Delete Links",
+        "operationId": "delete_links_links_delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "title": "Link Ids"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Ссылки"
+        ],
+        "summary": "Update Links",
+        "operationId": "update_links_links_put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LinkUpdate"
+                },
+                "title": "Links Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Update Links Links Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/links/{link_name}": {
+      "get": {
+        "tags": [
+          "Ссылки"
+        ],
+        "summary": "Get Link",
+        "operationId": "get_link_links__link_name__get",
+        "parameters": [
+          {
+            "name": "link_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Link Name"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/loyalty-cards/bulk": {
+      "post": {
+        "tags": [
+          "Карты лояльности"
+        ],
+        "summary": "Create Loyalty Cards",
+        "description": "Создать несколько карт лояльности.",
+        "operationId": "create_loyalty_cards_loyalty_cards_bulk_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_loyalty_cards_loyalty_cards_bulk_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Create Loyalty Cards Loyalty Cards Bulk Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/loyalty-cards/register": {
+      "post": {
+        "tags": [
+          "Карты лояльности"
+        ],
+        "summary": "Register Loyalty Card",
+        "description": "Регистрация карты лояльности в акции.\nЕсли карта с таким номером уже существует, она будет привязана к акции.\nЕсли карты нет, будет создана новая.",
+        "operationId": "register_loyalty_card_loyalty_cards_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoyaltyCardRegister"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoyaltyCardRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/loyalty-cards/{card_number}/promotion/{promotion_id}/check": {
+      "get": {
+        "tags": [
+          "Карты лояльности"
+        ],
+        "summary": "Check Registration",
+        "description": "Проверить, зарегистрирована ли карта в определённой акции.",
+        "operationId": "check_registration_loyalty_cards__card_number__promotion__promotion_id__check_get",
+        "parameters": [
+          {
+            "name": "card_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Card Number"
+            }
+          },
+          {
+            "name": "promotion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Check Registration Loyalty Cards  Card Number  Promotion  Promotion Id  Check Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/loyalty-cards/{card_number}": {
+      "get": {
+        "tags": [
+          "Карты лояльности"
+        ],
+        "summary": "Get Loyalty Card",
+        "description": "Получение информации о карте лояльности по номеру.",
+        "operationId": "get_loyalty_card_loyalty_cards__card_number__get",
+        "parameters": [
+          {
+            "name": "card_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Card Number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoyaltyCardRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Карты лояльности"
+        ],
+        "summary": "Update Loyalty Card",
+        "description": "Обновление информации о карте лояльности.",
+        "operationId": "update_loyalty_card_loyalty_cards__card_number__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "card_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Card Number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoyaltyCardUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoyaltyCardRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/loyalty-cards/all/{promotion_id}": {
+      "get": {
+        "tags": [
+          "Карты лояльности"
+        ],
+        "summary": "Get All Loyalty Cards",
+        "description": "Получение всех карт лояльности для определённой акции.",
+        "operationId": "get_all_loyalty_cards_loyalty_cards_all__promotion_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "promotion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Promotion Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 2000,
+              "title": "Per Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pagination_LoyaltyCardRead_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/jwt/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Auth:Jwt.Login",
+        "operationId": "auth_jwt_login_auth_jwt_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_auth_jwt_login_auth_jwt_login_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BearerResponse"
+                },
+                "example": {
+                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiOTIyMWZmYzktNjQwZi00MzcyLTg2ZDMtY2U2NDJjYmE1NjAzIiwiYXVkIjoiZmFzdGFwaS11c2VyczphdXRoIiwiZXhwIjoxNTcxNTA0MTkzfQ.M10bjOe45I5Ncu_uXvOmVV8QxnL-nZfcH96U90JaocI",
+                  "token_type": "bearer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "LOGIN_BAD_CREDENTIALS": {
+                    "summary": "Bad credentials or the user is inactive.",
+                    "value": {
+                      "detail": "LOGIN_BAD_CREDENTIALS"
+                    }
+                  },
+                  "LOGIN_USER_NOT_VERIFIED": {
+                    "summary": "The user is not verified.",
+                    "value": {
+                      "detail": "LOGIN_USER_NOT_VERIFIED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/jwt/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Auth:Jwt.Logout",
+        "operationId": "auth_jwt_logout_auth_jwt_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Register:Register",
+        "operationId": "register_register_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "REGISTER_USER_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": {
+                      "detail": "REGISTER_USER_ALREADY_EXISTS"
+                    }
+                  },
+                  "REGISTER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "REGISTER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Reset:Forgot Password",
+        "operationId": "reset_forgot_password_auth_forgot_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_reset_forgot_password_auth_forgot_password_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Reset:Reset Password",
+        "operationId": "reset_reset_password_auth_reset_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_reset_reset_password_auth_reset_password_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "RESET_PASSWORD_BAD_TOKEN": {
+                    "summary": "Bad or expired token.",
+                    "value": {
+                      "detail": "RESET_PASSWORD_BAD_TOKEN"
+                    }
+                  },
+                  "RESET_PASSWORD_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "RESET_PASSWORD_INVALID_PASSWORD",
+                        "reason": "Password should be at least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/request-verify-token": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verify:Request-Token",
+        "operationId": "verify_request_token_auth_request_verify_token_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_verify_request_token_auth_request_verify_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verify:Verify",
+        "operationId": "verify_verify_auth_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_verify_verify_auth_verify_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "VERIFY_USER_BAD_TOKEN": {
+                    "summary": "Bad token, not existing user ornot the e-mail currently set for the user.",
+                    "value": {
+                      "detail": "VERIFY_USER_BAD_TOKEN"
+                    }
+                  },
+                  "VERIFY_USER_ALREADY_VERIFIED": {
+                    "summary": "The user is already verified.",
+                    "value": {
+                      "detail": "VERIFY_USER_ALREADY_VERIFIED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Current User",
+        "operationId": "users_current_user_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Patch Current User",
+        "operationId": "users_patch_current_user_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                },
+                "examples": {
+                  "UPDATE_USER_EMAIL_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": {
+                      "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS"
+                    }
+                  },
+                  "UPDATE_USER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "UPDATE_USER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:User",
+        "operationId": "users_user_users__id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "403": {
+            "description": "Not a superuser."
+          },
+          "404": {
+            "description": "The user does not exist."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Patch User",
+        "operationId": "users_patch_user_users__id__patch",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "403": {
+            "description": "Not a superuser."
+          },
+          "404": {
+            "description": "The user does not exist."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UPDATE_USER_EMAIL_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": {
+                      "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS"
+                    }
+                  },
+                  "UPDATE_USER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "UPDATE_USER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Users:Delete User",
+        "operationId": "users_delete_user_users__id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Missing token or inactive user."
+          },
+          "403": {
+            "description": "Not a superuser."
+          },
+          "404": {
+            "description": "The user does not exist."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BearerResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "title": "BearerResponse"
+      },
+      "Body_auth_jwt_login_auth_jwt_login_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_auth_jwt_login_auth_jwt_login_post"
+      },
+      "Body_create_loyalty_cards_loyalty_cards_bulk_post": {
+        "properties": {
+          "cards": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/LoyaltyCardRegisterAdmin"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cards"
+          },
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "title": "Body_create_loyalty_cards_loyalty_cards_bulk_post"
+      },
+      "Body_create_video_file_videos_post": {
+        "properties": {
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "title": "Body_create_video_file_videos_post"
+      },
+      "Body_reset_forgot_password_auth_forgot_password_post": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "Body_reset_forgot_password_auth_forgot_password_post"
+      },
+      "Body_reset_reset_password_auth_reset_password_post": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token",
+          "password"
+        ],
+        "title": "Body_reset_reset_password_auth_reset_password_post"
+      },
+      "Body_update_file_static_update_single_put": {
+        "properties": {
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "File Id"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "file_type": {
+            "$ref": "#/components/schemas/StaticFileType"
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order"
+          },
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_id",
+          "promotion_id",
+          "file_type"
+        ],
+        "title": "Body_update_file_static_update_single_put"
+      },
+      "Body_upload_file_static_upload_single_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "file_type": {
+            "$ref": "#/components/schemas/StaticFileType"
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "promotion_id",
+          "file_type"
+        ],
+        "title": "Body_upload_file_static_upload_single_post"
+      },
+      "Body_upload_winners_csv_winners_upload_winners__post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_winners_csv_winners_upload_winners__post"
+      },
+      "Body_verify_request_token_auth_request_verify_token_post": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "Body_verify_request_token_auth_request_verify_token_post"
+      },
+      "Body_verify_verify_auth_verify_post": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "Body_verify_verify_auth_verify_post"
+      },
+      "CouponCreate": {
+        "properties": {
+          "cardNumber": {
+            "type": "string",
+            "title": "Cardnumber"
+          },
+          "couponNumber": {
+            "type": "string",
+            "title": "Couponnumber"
+          },
+          "isWinning": {
+            "type": "boolean",
+            "title": "Iswinning"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cardNumber",
+          "couponNumber",
+          "isWinning",
+          "promotionId"
+        ],
+        "title": "CouponCreate",
+        "description": "Schema for creating coupons."
+      },
+      "CouponRead": {
+        "properties": {
+          "cardNumber": {
+            "type": "string",
+            "title": "Cardnumber"
+          },
+          "couponNumber": {
+            "type": "string",
+            "title": "Couponnumber"
+          },
+          "isWinning": {
+            "type": "boolean",
+            "title": "Iswinning"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cardNumber",
+          "couponNumber",
+          "isWinning",
+          "promotionId",
+          "createdAt",
+          "id"
+        ],
+        "title": "CouponRead",
+        "description": "Schema for reading coupons."
+      },
+      "CouponsResponse": {
+        "properties": {
+          "promotions": {
+            "items": {
+              "$ref": "#/components/schemas/PromotionCoupons"
+            },
+            "type": "array",
+            "title": "Promotions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "promotions"
+        ],
+        "title": "CouponsResponse",
+        "description": "Response schema for getting coupons."
+      },
+      "DynamicRead": {
+        "properties": {
+          "value": {
+            "type": "integer",
+            "title": "Value",
+            "default": 0
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Date",
+            "default": "2025-08-07T03:43:17.884643"
+          }
+        },
+        "type": "object",
+        "title": "DynamicRead",
+        "description": "Schema for dynamic reading."
+      },
+      "ErrorModel": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorModel"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LinkCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value",
+          "promotion_id"
+        ],
+        "title": "LinkCreate"
+      },
+      "LinkRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value",
+          "promotion_id",
+          "id"
+        ],
+        "title": "LinkRead"
+      },
+      "LinkUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value",
+          "promotion_id",
+          "id"
+        ],
+        "title": "LinkUpdate"
+      },
+      "LoyaltyCardRead": {
+        "properties": {
+          "card_number": {
+            "type": "string",
+            "title": "Card Number",
+            "description": "Номер карты лояльности"
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number",
+            "description": "Номер телефона"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "card_number",
+          "id",
+          "created_at"
+        ],
+        "title": "LoyaltyCardRead"
+      },
+      "LoyaltyCardRegister": {
+        "properties": {
+          "card_number": {
+            "type": "string",
+            "title": "Card Number",
+            "description": "Номер карты лояльности"
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number",
+            "description": "Номер телефона"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id",
+            "description": "ID акции для регистрации"
+          }
+        },
+        "type": "object",
+        "required": [
+          "card_number",
+          "promotion_id"
+        ],
+        "title": "LoyaltyCardRegister"
+      },
+      "LoyaltyCardRegisterAdmin": {
+        "properties": {
+          "card_number": {
+            "type": "string",
+            "title": "Card Number",
+            "description": "Номер карты лояльности"
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number",
+            "description": "Номер телефона"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id",
+            "description": "ID акции для регистрации"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Дата регистрации"
+          }
+        },
+        "type": "object",
+        "required": [
+          "card_number",
+          "promotion_id",
+          "created_at"
+        ],
+        "title": "LoyaltyCardRegisterAdmin"
+      },
+      "LoyaltyCardUpdate": {
+        "properties": {
+          "card_number": {
+            "type": "string",
+            "title": "Card Number",
+            "description": "Номер карты лояльности"
+          },
+          "phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number",
+            "description": "Номер телефона"
+          }
+        },
+        "type": "object",
+        "required": [
+          "card_number"
+        ],
+        "title": "LoyaltyCardUpdate"
+      },
+      "Pagination_LoyaltyCardRead_": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "title": "Count",
+            "description": "Number of total items"
+          },
+          "pageCount": {
+            "type": "integer",
+            "title": "Pagecount",
+            "description": "Number of pages"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LoyaltyCardRead"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "List of items returned in a paginated response"
+          },
+          "nextPage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nextpage",
+            "description": "url of the next page if it exists"
+          },
+          "previousPage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previouspage",
+            "description": "url of the previous page if it exists"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "pageCount",
+          "items"
+        ],
+        "title": "Pagination[LoyaltyCardRead]"
+      },
+      "PrizeCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "stageId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Stageid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "stageId"
+        ],
+        "title": "PrizeCreate"
+      },
+      "PrizeRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "winners": {
+            "items": {
+              "$ref": "#/components/schemas/WinnerRead"
+            },
+            "type": "array",
+            "title": "Winners"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "winners"
+        ],
+        "title": "PrizeRead"
+      },
+      "PrizeUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id"
+        ],
+        "title": "PrizeUpdate"
+      },
+      "PromotionAdminRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startdate",
+            "default": "2025-08-07T03:43:17.885159"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Enddate",
+            "default": "2025-08-07T03:43:17.885184"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive",
+            "default": true
+          },
+          "parentId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentid"
+          },
+          "rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules",
+            "default": ""
+          },
+          "couponsPlaceholder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Couponsplaceholder",
+            "default": ""
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "promotionImages": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Promotionimages"
+          },
+          "partnerImages": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Partnerimages"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Documents"
+          },
+          "children": {
+            "items": {
+              "$ref": "#/components/schemas/PromotionChildRead"
+            },
+            "type": "array",
+            "title": "Children"
+          },
+          "promotionLogo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StaticFileRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "participantsDynamic": {
+            "items": {
+              "$ref": "#/components/schemas/DynamicRead"
+            },
+            "type": "array",
+            "title": "Participantsdynamic"
+          },
+          "loyaltyCardsDynamic": {
+            "items": {
+              "$ref": "#/components/schemas/DynamicRead"
+            },
+            "type": "array",
+            "title": "Loyaltycardsdynamic"
+          },
+          "participantsCount": {
+            "type": "integer",
+            "title": "Participantscount",
+            "default": 0
+          },
+          "loyaltyCardsCount": {
+            "type": "integer",
+            "title": "Loyaltycardscount",
+            "default": 0
+          },
+          "isParent": {
+            "type": "boolean",
+            "title": "Isparent",
+            "readOnly": true
+          },
+          "isChild": {
+            "type": "boolean",
+            "title": "Ischild",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "isParent",
+          "isChild"
+        ],
+        "title": "PromotionAdminRead",
+        "description": "Schema for reading promotions for admin."
+      },
+      "PromotionChildRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startdate",
+            "default": "2025-08-07T03:43:17.885159"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Enddate",
+            "default": "2025-08-07T03:43:17.885184"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive",
+            "default": true
+          },
+          "parentId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentid"
+          },
+          "rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules",
+            "default": ""
+          },
+          "couponsPlaceholder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Couponsplaceholder",
+            "default": ""
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "promotionImages": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Promotionimages"
+          },
+          "partnerImages": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Partnerimages"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Documents"
+          },
+          "isChild": {
+            "type": "boolean",
+            "title": "Ischild",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "isChild"
+        ],
+        "title": "PromotionChildRead",
+        "description": "Schema for child promotions (no nested children allowed)."
+      },
+      "PromotionCoupons": {
+        "properties": {
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "promotionName": {
+            "type": "string",
+            "title": "Promotionname"
+          },
+          "coupons": {
+            "items": {
+              "$ref": "#/components/schemas/CouponRead"
+            },
+            "type": "array",
+            "title": "Coupons"
+          },
+          "couponCount": {
+            "type": "integer",
+            "title": "Couponcount",
+            "description": "Get the total number of coupons for this promotion.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "promotionId",
+          "promotionName",
+          "coupons",
+          "couponCount"
+        ],
+        "title": "PromotionCoupons",
+        "description": "Schema for coupons grouped by promotion."
+      },
+      "PromotionCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startdate",
+            "default": "2025-08-07T03:43:17.885159"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Enddate",
+            "default": "2025-08-07T03:43:17.885184"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive",
+            "default": true
+          },
+          "parentId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentid"
+          },
+          "rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules",
+            "default": ""
+          },
+          "couponsPlaceholder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Couponsplaceholder",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "PromotionCreate",
+        "description": "Schema for creating promotions."
+      },
+      "PromotionRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startdate",
+            "default": "2025-08-07T03:43:17.885159"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Enddate",
+            "default": "2025-08-07T03:43:17.885184"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive",
+            "default": true
+          },
+          "parentId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentid"
+          },
+          "rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules",
+            "default": ""
+          },
+          "couponsPlaceholder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Couponsplaceholder",
+            "default": ""
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "promotionImages": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Promotionimages"
+          },
+          "partnerImages": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Partnerimages"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/StaticFileRead"
+            },
+            "type": "array",
+            "title": "Documents"
+          },
+          "children": {
+            "items": {
+              "$ref": "#/components/schemas/PromotionChildRead"
+            },
+            "type": "array",
+            "title": "Children"
+          },
+          "promotionLogo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StaticFileRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "isParent": {
+            "type": "boolean",
+            "title": "Isparent",
+            "readOnly": true
+          },
+          "isChild": {
+            "type": "boolean",
+            "title": "Ischild",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "isParent",
+          "isChild"
+        ],
+        "title": "PromotionRead",
+        "description": "Schema for reading promotions."
+      },
+      "PromotionUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startdate",
+            "default": "2025-08-07T03:43:17.885159"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Enddate",
+            "default": "2025-08-07T03:43:17.885184"
+          },
+          "isActive": {
+            "type": "boolean",
+            "title": "Isactive",
+            "default": true
+          },
+          "parentId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentid"
+          },
+          "rules": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules",
+            "default": ""
+          },
+          "couponsPlaceholder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Couponsplaceholder",
+            "default": ""
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id"
+        ],
+        "title": "PromotionUpdate",
+        "description": "Schema for updating promotions."
+      },
+      "StageCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "promotionId",
+          "order"
+        ],
+        "title": "StageCreate"
+      },
+      "StageRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "prizes": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PrizeRead"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prizes",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "promotionId",
+          "id"
+        ],
+        "title": "StageRead"
+      },
+      "StageUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "promotionId",
+          "id"
+        ],
+        "title": "StageUpdate"
+      },
+      "StaticFileDelete": {
+        "properties": {
+          "file_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StaticFileType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "promotion_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promotion Id"
+          },
+          "order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order"
+          },
+          "file_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "File Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_ids"
+        ],
+        "title": "StaticFileDelete",
+        "description": "Schema for deleting static files."
+      },
+      "StaticFileRead": {
+        "properties": {
+          "file_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StaticFileType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "promotion_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promotion Id"
+          },
+          "order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filename"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path"
+        ],
+        "title": "StaticFileRead",
+        "description": "Schema for creating static files."
+      },
+      "StaticFileType": {
+        "type": "string",
+        "enum": [
+          "promotion_image",
+          "partner_image",
+          "document",
+          "promotion_logo"
+        ],
+        "title": "StaticFileType",
+        "description": "Types of static files."
+      },
+      "SwitchCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "boolean",
+            "title": "Value"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value",
+          "promotion_id"
+        ],
+        "title": "SwitchCreate"
+      },
+      "SwitchRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "boolean",
+            "title": "Value"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value",
+          "promotion_id",
+          "id"
+        ],
+        "title": "SwitchRead"
+      },
+      "SwitchUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "boolean",
+            "title": "Value"
+          },
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value",
+          "promotion_id",
+          "id"
+        ],
+        "title": "SwitchUpdate"
+      },
+      "UserCreate": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active",
+            "default": true
+          },
+          "is_superuser": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Superuser",
+            "default": false
+          },
+          "is_verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Verified",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserCreate"
+      },
+      "UserRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "is_superuser": {
+            "type": "boolean",
+            "title": "Is Superuser",
+            "default": false
+          },
+          "is_verified": {
+            "type": "boolean",
+            "title": "Is Verified",
+            "default": false
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "created_at"
+        ],
+        "title": "UserRead"
+      },
+      "UserUpdate": {
+        "properties": {
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Password"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "is_superuser": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Superuser"
+          },
+          "is_verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Verified"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WinnerCreate": {
+        "properties": {
+          "loyaltyCardNumber": {
+            "type": "string",
+            "title": "Loyaltycardnumber"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "title": "Phonenumber"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "prizeId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Prizeid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loyaltyCardNumber",
+          "phoneNumber",
+          "promotionId",
+          "prizeId"
+        ],
+        "title": "WinnerCreate"
+      },
+      "WinnerRead": {
+        "properties": {
+          "loyaltyCardNumber": {
+            "type": "string",
+            "title": "Loyaltycardnumber"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "title": "Phonenumber"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loyaltyCardNumber",
+          "phoneNumber",
+          "promotionId",
+          "id"
+        ],
+        "title": "WinnerRead"
+      },
+      "WinnerUpdate": {
+        "properties": {
+          "loyaltyCardNumber": {
+            "type": "string",
+            "title": "Loyaltycardnumber"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "title": "Phonenumber"
+          },
+          "promotionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotionid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loyaltyCardNumber",
+          "phoneNumber",
+          "promotionId",
+          "id"
+        ],
+        "title": "WinnerUpdate"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {
+
+            },
+            "tokenUrl": "auth/jwt/login"
+          }
+        }
+      }
+    }
+  }
+}
