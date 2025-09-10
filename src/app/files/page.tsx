@@ -127,30 +127,31 @@ function PromotionFilesContent() {
                 <Button
                   variant="outline"
                   onClick={() => window.open(generatePromoUrl(promotion.id), '_blank')}
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto min-h-[40px] px-4"
                 >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  <span className="sm:hidden">Просмотр</span>
-                  <span className="hidden sm:inline">Просмотреть акцию</span>
+                  <ExternalLink className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="sm:hidden text-sm">Просмотр</span>
+                  <span className="hidden sm:inline text-sm">Просмотреть акцию</span>
                 </Button>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
                     onClick={() => fetchPromotion(true)}
                     disabled={isRefreshing}
-                    className="flex-1 sm:flex-initial"
+                    className="flex-1 sm:flex-initial min-h-[40px] px-3"
                   >
-                    <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    <span className="hidden sm:inline">Обновить</span>
+                    <RefreshCw className={`h-4 w-4 mr-2 flex-shrink-0 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    <span className="hidden sm:inline text-sm">Обновить</span>
+                    <span className="sm:hidden text-sm">Обновить</span>
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => router.push('/')}
-                    className="flex-1 sm:flex-initial"
+                    className="flex-1 sm:flex-initial min-h-[40px] px-3"
                   >
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Назад к списку</span>
-                    <span className="sm:hidden">Назад</span>
+                    <ArrowLeft className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="hidden sm:inline text-sm">Назад к списку</span>
+                    <span className="sm:hidden text-sm">Назад</span>
                   </Button>
                 </div>
               </div>

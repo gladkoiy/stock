@@ -164,47 +164,47 @@ export function FileList({
                   </div>
                 </div>
 
-                {/* Actions - mobile responsive */}
-                <div className="grid grid-cols-2 gap-1 sm:flex">
+                {/* Actions - responsive grid */}
+                <div className="grid grid-cols-2 gap-1">
                   <Button
                     size="sm"
                     variant="outline"
-                    className="sm:flex-1"
+                    className="px-2 py-1.5 h-8 text-xs"
                     onClick={() => handlePreview(file)}
                   >
-                    <Eye className="h-3 w-3 sm:mr-1" />
-                    <span className="hidden sm:inline text-xs">Просмотр</span>
+                    <Eye className="h-3 w-3 mr-1" />
+                    <span className="hidden sm:inline">Просмотр</span>
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="sm:flex-1"
+                    className="px-2 py-1.5 h-8 text-xs"
                     onClick={() => {
                       // Open file in new tab for download
                       window.open(apiClient.buildFileUrl(file.file_path), '_blank');
                     }}
                   >
-                    <Download className="h-3 w-3 sm:mr-1" />
-                    <span className="hidden sm:inline text-xs">Скачать</span>
+                    <Download className="h-3 w-3 mr-1" />
+                    <span className="hidden sm:inline">Скачать</span>
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="sm:flex-1"
+                    className="px-2 py-1.5 h-8 text-xs"
                     onClick={() => toast.info('Редактирование файлов будет добавлено позже')}
                   >
-                    <Edit className="h-3 w-3 sm:mr-1" />
-                    <span className="hidden sm:inline text-xs">Редакт.</span>
+                    <Edit className="h-3 w-3 mr-1" />
+                    <span className="hidden sm:inline">Редакт.</span>
                   </Button>
                   <Button
                     size="sm"
                     variant="destructive"
-                    className="sm:flex-1"
+                    className="px-2 py-1.5 h-8 text-xs"
                     onClick={() => handleDelete(file)}
                     disabled={deletingFileId === file.file_path}
                   >
-                    <Trash2 className="h-3 w-3 sm:mr-1" />
-                    <span className="hidden sm:inline text-xs">Удалить</span>
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    <span className="hidden sm:inline">Удалить</span>
                   </Button>
                 </div>
               </div>

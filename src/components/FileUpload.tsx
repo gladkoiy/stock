@@ -212,9 +212,9 @@ export function FileUpload({ promotionId, onUploadComplete }: FileUploadProps) {
                   name="caption"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Подпись</FormLabel>
+                      <FormLabel>Ссылка для перехода</FormLabel>
                       <FormControl>
-                        <Input placeholder="Описание файла" {...field} />
+                        <Input placeholder="Вставьте ссылку для перехода" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
