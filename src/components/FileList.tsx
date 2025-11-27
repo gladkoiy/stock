@@ -38,8 +38,17 @@ export function FileList({
   // API returns file_type as null, but files are already categorized in separate arrays
   const filteredFiles = files;
 
+  const getDisplayName = (file: StaticFileRead): string => {
+    if (file.filename) return file.filename;
+    if (file.caption) return file.caption;
+    // Extract filename from file_path as fallback
+    const pathParts = file.file_path.split('/');
+    return pathParts[pathParts.length - 1] || 'файл';
+  };
+
   const handleDelete = async (file: StaticFileRead) => {
-    const confirmed = window.confirm(`Вы уверены, что хотите удалить файл "${file.filename}"?`);
+    const displayName = getDisplayName(file);
+    const confirmed = window.confirm(`Вы уверены, что хотите удалить файл "${displayName}"?`);
     if (!confirmed) return;
 
     setDeletingFileId(file.file_path);

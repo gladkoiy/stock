@@ -201,7 +201,7 @@ function PromotionFilesContent() {
                     <span className="text-sm text-gray-600">(текущий логотип)</span>
                   )}
                 </h3>
-                
+
                 {promotion.promotionLogo ? (
                   <FileList
                     files={[promotion.promotionLogo]}
@@ -215,6 +215,33 @@ function PromotionFilesContent() {
                     <p className="text-gray-600">Логотип не загружен</p>
                     <p className="text-sm text-gray-500 mt-1">
                       Используйте форму загрузки выше и выберите тип &quot;Логотип акции&quot;
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Promotion Logo Mobile - Special handling for single file */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  Логотип для МП Копилка Доставка
+                  {promotion.promotionLogoMobile && (
+                    <span className="text-sm text-gray-600">(текущий логотип)</span>
+                  )}
+                </h3>
+
+                {promotion.promotionLogoMobile ? (
+                  <FileList
+                    files={[promotion.promotionLogoMobile]}
+                    fileType={StaticFileType.promotion_logo_mobile}
+                    title="Текущий логотип для МП"
+                    promotionId={promotionId}
+                    onFileDeleted={handleFileDeleted}
+                  />
+                ) : (
+                  <div className="border border-dashed border-gray-300 rounded-lg p-8 text-center">
+                    <p className="text-gray-600">Логотип не загружен</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Используйте форму загрузки выше и выберите тип &quot;Логотип для МП Копилка Доставка&quot;
                     </p>
                   </div>
                 )}

@@ -122,6 +122,7 @@ export function FileUpload({ promotionId, onUploadComplete }: FileUploadProps) {
     { value: StaticFileType.partner_image, label: 'Изображение партнера' },
     { value: StaticFileType.document, label: 'Документ' },
     { value: StaticFileType.promotion_logo, label: 'Логотип акции' },
+    { value: StaticFileType.promotion_logo_mobile, label: 'Логотип для МП Копилка Доставка' },
   ];
 
   return (

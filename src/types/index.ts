@@ -2,7 +2,8 @@ export enum StaticFileType {
   promotion_image = "promotion_image",
   partner_image = "partner_image",
   document = "document",
-  promotion_logo = "promotion_logo"
+  promotion_logo = "promotion_logo",
+  promotion_logo_mobile = "promotion_logo_mobile"
 }
 
 export interface StaticFileRead {
@@ -37,6 +38,7 @@ export interface PromotionRead {
   documents: StaticFileRead[];
   children: PromotionChildRead[];
   promotionLogo: StaticFileRead | null;
+  promotionLogoMobile: StaticFileRead | null;
   isParent: boolean;
   isChild: boolean;
 }
