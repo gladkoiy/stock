@@ -62,6 +62,7 @@ export function PromotionModal({
       startDate: '',
       endDate: '',
       isActive: true,
+      isParent: false,
       parentId: 'none',
       rules: '',
       couponsPlaceholder: '',
@@ -83,6 +84,7 @@ export function PromotionModal({
           startDate: formatDateForInput(promotion.startDate),
           endDate: formatDateForInput(promotion.endDate),
           isActive: promotion.isActive,
+          isParent: promotion.isParent || false,
           parentId: promotion.parentId || 'none',
           rules: promotion.rules || '',
           couponsPlaceholder: promotion.couponsPlaceholder || '',
@@ -98,6 +100,7 @@ export function PromotionModal({
           startDate: format(now, "yyyy-MM-dd'T'HH:mm"),
           endDate: format(tomorrow, "yyyy-MM-dd'T'HH:mm"),
           isActive: true,
+          isParent: false,
           parentId: 'none',
           rules: '',
           couponsPlaceholder: '',
@@ -149,11 +152,24 @@ export function PromotionModal({
   };
 
   // Filter parent promotions - exclude current promotion and its children
+  // Also separate active and inactive promotions
   const availableParentPromotions = parentPromotions.filter(p => 
     p.id !== promotion?.id && 
     !p.isChild && 
     p.parentId !== promotion?.id
   );
+
+  const activeParentPromotions = availableParentPromotions.filter(p => {
+    const now = new Date();
+    const endDate = new Date(p.endDate);
+    return p.isActive && endDate > now;
+  });
+
+  const expiredParentPromotions = availableParentPromotions.filter(p => {
+    const now = new Date();
+    const endDate = new Date(p.endDate);
+    return !p.isActive || endDate <= now;
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -230,29 +246,59 @@ export function PromotionModal({
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Активная акция</FormLabel>
-                    <div className="text-sm text-muted-foreground">
-                      Будет ли акция активной после создания
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel>Активная акция</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Будет ли акция активной после создания
+                      </div>
                     </div>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            {availableParentPromotions.length > 0 && (
+              <FormField
+                control={form.control}
+                name="isParent"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel>Родительская акция</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Может ли эта акция иметь дочерние акции
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          // Если отмечаем как родительскую, убираем выбор родителя
+                          if (checked) {
+                            form.setValue('parentId', 'none');
+                          }
+                        }}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {availableParentPromotions.length > 0 && !form.watch('isParent') && (
               <FormField
                 control={form.control}
                 name="parentId"
@@ -260,7 +306,33 @@ export function PromotionModal({
                   <FormItem>
                     <FormLabel>Родительская акция</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        // Автоматически устанавливаем даты родительской акции
+                        if (value !== 'none') {
+                          const selectedParent = availableParentPromotions.find(p => p.id === value);
+                          if (selectedParent) {
+                            const formatDateForInput = (dateString: string) => {
+                              const date = new Date(dateString);
+                              return format(date, "yyyy-MM-dd'T'HH:mm");
+                            };
+                            
+                            form.setValue('startDate', formatDateForInput(selectedParent.startDate));
+                            form.setValue('endDate', formatDateForInput(selectedParent.endDate));
+
+                            // Показать предупреждение для неактивных/завершенных акций
+                            const now = new Date();
+                            const endDate = new Date(selectedParent.endDate);
+                            if (!selectedParent.isActive || endDate <= now) {
+                              toast.warning(
+                                `Внимание: родительская акция "${selectedParent.name}" ${
+                                  !selectedParent.isActive ? 'неактивна' : 'уже завершилась'
+                                }. Даты автоматически установлены, но рекомендуется выбрать активную акцию или создать основную акцию.`
+                              );
+                            }
+                          }
+                        }
+                      }}
                       defaultValue={field.value}
                       disabled={isLoading}
                     >
@@ -271,11 +343,31 @@ export function PromotionModal({
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="none">Нет (основная акция)</SelectItem>
-                        {availableParentPromotions.map((p) => (
-                          <SelectItem key={p.id} value={p.id}>
-                            {p.name}
-                          </SelectItem>
-                        ))}
+                        
+                        {activeParentPromotions.length > 0 && (
+                          <>
+                            {activeParentPromotions.map((p) => (
+                              <SelectItem key={p.id} value={p.id}>
+                                {p.name} ✅
+                              </SelectItem>
+                            ))}
+                          </>
+                        )}
+                        
+                        {expiredParentPromotions.length > 0 && (
+                          <>
+                            {expiredParentPromotions.map((p) => {
+                              const now = new Date();
+                              const endDate = new Date(p.endDate);
+                              const isExpired = endDate <= now;
+                              return (
+                                <SelectItem key={p.id} value={p.id}>
+                                  {p.name} {!p.isActive ? '⏸️' : isExpired ? '⏰' : '❌'}
+                                </SelectItem>
+                              );
+                            })}
+                          </>
+                        )}
                       </SelectContent>
                     </Select>
                     <FormMessage />

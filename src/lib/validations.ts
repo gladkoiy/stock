@@ -19,6 +19,7 @@ export const promotionSchema = z.object({
     .min(1, 'Дата окончания обязательна')
     .refine((date) => !isNaN(Date.parse(date)), 'Неверный формат даты'),
   isActive: z.boolean().default(true),
+  isParent: z.boolean().default(false),
   parentId: z.string().uuid().optional().or(z.literal('none')),
   rules: z.string().optional(),
   couponsPlaceholder: z.string().optional(),
@@ -29,6 +30,15 @@ export const promotionSchema = z.object({
 }, {
   message: 'Дата окончания должна быть позже даты начала',
   path: ['endDate'],
+}).refine((data) => {
+  // Нельзя одновременно быть родителем и иметь родителя
+  if (data.isParent && data.parentId && data.parentId !== 'none') {
+    return false;
+  }
+  return true;
+}, {
+  message: 'Акция не может одновременно быть родительской и дочерней',
+  path: ['isParent'],
 });
 
 export const fileUploadSchema = z.object({

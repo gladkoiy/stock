@@ -46,6 +46,7 @@ export interface PromotionCreate {
   startDate: string;
   endDate: string;
   isActive: boolean;
+  isParent?: boolean;
   parentId?: string | null;
   rules?: string | null;
   couponsPlaceholder?: string | null;
